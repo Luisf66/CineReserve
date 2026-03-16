@@ -47,8 +47,8 @@ INSTALLED_APPS = [
     'users',
     'movies',
     'tickets',
-    'sessions',
     'reservations',
+    'movie_sessions',
 ]
 
 MIDDLEWARE = [
@@ -91,6 +91,7 @@ DATABASES = {
     }
 }
 
+AUTH_USER_MODEL = "users.User"
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
