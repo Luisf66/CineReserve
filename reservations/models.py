@@ -4,7 +4,7 @@ from django.db import models
 class Reservation(models.Model):
 
     class ReservationStatus(models.TextChoices):
-        LOCKED = "locked", "Locked"
+        RESERVED = "reserved", "Reserved"
         EXPIRED = "expired", "Expired"
 
     user = models.ForeignKey('users.User', on_delete=models.PROTECT)
@@ -15,7 +15,7 @@ class Reservation(models.Model):
     status = models.CharField(
         max_length=10,
         choices=ReservationStatus.choices,
-        default=ReservationStatus.LOCKED
+        default=ReservationStatus.RESERVED
     )
 
     locked_until = models.DateTimeField()

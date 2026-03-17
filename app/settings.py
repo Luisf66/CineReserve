@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
+    'drf_spectacular',
 
     'users',
     'movies',
@@ -128,3 +129,21 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+# Configuração do Swagger
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Cinepolis Natal API',
+    'DESCRIPTION': 'API para gerenciamento de sessões, reservas e ingressos',
+    'VERSION': '1.0.0',
+    'TAGS': [
+        {'name': 'Movies', 'description': 'Gerenciamento de filmes'},
+        {'name': 'Sessions', 'description': 'Sessões de cinema'},
+        {'name': 'Reservations', 'description': 'Reserva de assentos'},
+        {'name': 'Tickets', 'description': 'Compra de ingressos'},
+        {'name': 'Users', 'description': 'Usuários do sistema'},
+    ],
+}
