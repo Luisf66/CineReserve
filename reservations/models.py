@@ -8,7 +8,7 @@ class Reservation(models.Model):
         EXPIRED = "expired", "Expired"
 
     user = models.ForeignKey('users.User', on_delete=models.PROTECT)
-    session = models.ForeignKey('sessions.Session', on_delete=models.PROTECT)
+    session = models.ForeignKey('movie_sessions.Session', on_delete=models.PROTECT)
 
     seat_number = models.CharField(max_length=3, db_index=True)
 

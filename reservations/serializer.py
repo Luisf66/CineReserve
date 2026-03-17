@@ -1,21 +1,50 @@
 from rest_framework import serializers
+from django.utils import timezone
+from datetime import timedelta
 from django.db import transaction
+
 from .models import Reservation
+
 
 class ReservationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Reservation
-        fields = ['id', 'seat', 'session', 'user']
+        fields = ['id', 'user', 'session', 'seat_number', 'status', 'locked_until']
+        read_only_fields = ['status', 'locked_until']
 
     @transaction.atomic
     def create(self, validated_data):
-        seat = Seat.objects.select_for_update().get(id=validated_data['seat'].id)
+        user = validated_data['user']
+        session = validated_data['session']
+        seat_number = validated_data['seat_number']
 
-        if seat.status != 'AVAILABLE':
-            raise serializers.ValidationError('Seat is not available')
+        now = timezone.now()
 
-        seat.status = 'RESERVED'
-        seat.save()
+        existing = Reservation.objects.filter(
+            session=session,
+            seat_number=seat_number,
+            status='reserved',
+            locked_until__gt=now
+        ).first()
 
-        return Reservation.objects.create(**validated_data)
+        if existing:
+            raise serializers.ValidationError("Assento já está reservado.")
+
+        Reservation.objects.filter(
+            session=session,
+            seat_number=seat_number,
+            locked_until__lte=now,
+            status='reserved'
+        ).update(status='expired')
+
+        # ⏱ cria nova reserva (10 minutos)
+        reservation = Reservation.objects.create(
+            user=user,
+            session=session,
+            seat_number=seat_number,
+            status='reserved',
+            locked_until=now + timedelta(minutes=10)
+        )
+
+        return reservation
