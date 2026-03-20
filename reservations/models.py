@@ -4,18 +4,18 @@ from django.db import models
 class Reservation(models.Model):
 
     class ReservationStatus(models.TextChoices):
-        LOCKED = "locked", "Locked"
+        RESERVED = "reserved", "Reserved"
         EXPIRED = "expired", "Expired"
 
     user = models.ForeignKey('users.User', on_delete=models.PROTECT)
-    session = models.ForeignKey('sessions.Session', on_delete=models.PROTECT)
+    session = models.ForeignKey('movie_sessions.Session', on_delete=models.PROTECT)
 
     seat_number = models.CharField(max_length=3, db_index=True)
 
     status = models.CharField(
         max_length=10,
         choices=ReservationStatus.choices,
-        default=ReservationStatus.LOCKED
+        default=ReservationStatus.RESERVED
     )
 
     locked_until = models.DateTimeField()

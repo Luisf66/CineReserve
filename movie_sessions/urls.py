@@ -9,5 +9,5 @@ urlpatterns = [
     path('sessions/<int:pk>/', views.SessionRetrieveUpdateDestroyView.as_view(), name='session-detail'),
 
     path('movies/<int:movie_id>/sessions/', views.MovieSessionsListView.as_view(), name='movie-sessions'),
-    path('sessions/<int:pk>/seats/', views.SeatMapView.as_view(), name='session-seat-map'),
+    #path('sessions/<int:pk>/seats/', views.SeatMapView.as_view(), name='session-seat-map'),
 ]
