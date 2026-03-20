@@ -1,6 +1,7 @@
 from django.utils import timezone
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics, status
 from drf_spectacular.utils import extend_schema
 
@@ -12,6 +13,7 @@ from .models import Reservation
 class ReservationListCreateView(generics.ListCreateAPIView):
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
+    permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -20,9 +22,11 @@ class ReservationListCreateView(generics.ListCreateAPIView):
 class ReservationRetrieveView(generics.RetrieveAPIView):
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
+    permission_classes = [IsAuthenticated]
 
 @extend_schema(tags=["Reservations"])
 class CancelReservationView(APIView):
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, pk):
         try:

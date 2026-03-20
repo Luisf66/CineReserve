@@ -1,4 +1,4 @@
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics
 from drf_spectacular.utils import extend_schema
 
@@ -11,10 +11,10 @@ from .models import Movie
 class MoviesListCreateView(generics.ListCreateAPIView):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
-    permission_classes = [AllowAny] # trocar para IsAuthenticated
+    permission_classes = [IsAuthenticated] 
 
 @extend_schema(tags=['Movies'])
 class MoviesRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
-    permission_classes = [AllowAny] # trocar para IsAuthenticated
+    permission_classes = [IsAuthenticated] 
