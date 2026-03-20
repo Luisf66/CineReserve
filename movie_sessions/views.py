@@ -1,4 +1,6 @@
-from rest_framework import generics
+from django.db.models import ProtectedError
+from rest_framework import generics, status
+from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from drf_spectacular.utils import extend_schema
 
@@ -17,6 +19,17 @@ class SessionRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Session.objects.all()
     serializer_class = SessionSerializer
     permission_classes = [IsAuthenticated]
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        try:
+            self.perform_destroy(instance)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except ProtectedError:
+            return Response(
+                {"detail": "Essa sessão possui reservas vinculadas"}, 
+                status=status.HTTP_409_CONFLICT
+            )
 
 @extend_schema(tags=["Sessions"])
 class MovieSessionsListView(generics.ListAPIView):
