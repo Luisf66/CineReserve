@@ -4,13 +4,31 @@ from datetime import timedelta
 from django.db import transaction
 
 from .models import Reservation
+from users.models import User
+from movie_sessions.models import Session
+from users.serializer import UserSerializer
+from movie_sessions.serializer import SessionSerializer
 
 
 class ReservationSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    session = serializers.PrimaryKeyRelatedField(queryset=Session.objects.all())
+
+    user_data = UserSerializer(source='user', read_only=True)
+    session_data = SessionSerializer(source='session', read_only=True)
 
     class Meta:
         model = Reservation
-        fields = ['id', 'user', 'session', 'seat_number', 'status', 'locked_until']
+        fields = [
+            'id',
+            'user', 
+            'user_data',
+            'session', 
+            'session_data', 
+            'seat_number', 
+            'status', 
+            'locked_until'
+        ]
         read_only_fields = ['status', 'locked_until']
 
     @transaction.atomic
@@ -38,7 +56,6 @@ class ReservationSerializer(serializers.ModelSerializer):
             status='reserved'
         ).update(status='expired')
 
-        # ⏱ cria nova reserva (10 minutos)
         reservation = Reservation.objects.create(
             user=user,
             session=session,
