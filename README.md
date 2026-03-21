@@ -50,6 +50,10 @@ cd cinereserve
 ### 2. Criar .env
 
 - Copiar o .env_example para um .env
+- Criar uma chave com o comando
+```bash
+python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'
+```
 
 ### 3. Subir os containers 
 
