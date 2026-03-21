@@ -1,7 +1,7 @@
 from django.db.models import ProtectedError
 from rest_framework import generics, status
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from drf_spectacular.utils import extend_schema
 
 from .serializer import SessionSerializer
@@ -12,7 +12,7 @@ from .models import Session
 class SessionListCreateView(generics.ListCreateAPIView):
     queryset = Session.objects.all()
     serializer_class = SessionSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
 @extend_schema(tags=["Sessions"])
 class SessionRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
@@ -34,7 +34,7 @@ class SessionRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 @extend_schema(tags=["Sessions"])
 class MovieSessionsListView(generics.ListAPIView):
     serializer_class = SessionSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
         movie_id = self.kwargs['movie_id']

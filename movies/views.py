@@ -1,7 +1,7 @@
 from django.db.models import ProtectedError
 from rest_framework import generics, status
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from drf_spectacular.utils import extend_schema
 
 from .serializer import MovieSerializer
@@ -13,7 +13,7 @@ from .models import Movie
 class MoviesListCreateView(generics.ListCreateAPIView):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
-    permission_classes = [IsAuthenticated] 
+    permission_classes = [IsAuthenticatedOrReadOnly] 
 
 @extend_schema(tags=['Movies'])
 class MoviesRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
